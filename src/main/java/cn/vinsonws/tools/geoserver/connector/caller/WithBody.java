@@ -1,4 +1,4 @@
-package cn.vinsonws.tools.geoserver.connector.args;
+package cn.vinsonws.tools.geoserver.connector.caller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

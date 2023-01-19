@@ -1,6 +1,6 @@
 package cn.vinsonws.tools.geoserver.connector;
 
-import cn.vinsonws.tools.geoserver.connector.args.*;
+import cn.vinsonws.tools.geoserver.connector.caller.*;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -11,6 +11,7 @@ import java.net.PasswordAuthentication;
 public class GeoserverConnector {
 
     private final AsyncGeoserverClient asyncClient;
+    private final Base.BaseBuilder base;
 
     public GeoserverConnector(String baseurl, String userName, String password) {
         this.asyncClient =
@@ -21,6 +22,7 @@ public class GeoserverConnector {
                         return new PasswordAuthentication(userName, password.toCharArray());
                     }
                 });
+        this.base = Base.base(this.asyncClient, "/rest");
     }
 
     /**
@@ -39,16 +41,16 @@ public class GeoserverConnector {
      * to parse both requests. You can customize the results adding a properties file called
      * manifest.properties into the root of the data directory.
      */
-    public ManifestCaller.Builder aboutManifest() {
-        return ManifestCaller.builder(asyncClient);
+    public Manifest.ManifestBuilder aboutManifest() {
+        return this.base.aboutManifest();
     }
 
     /**
      * Returns a list of system-level information. Major operating systems
      * (Linux, Windows and MacOX) are supported out of the box.
      */
-    public SystemStatusCaller.Builder aboutSystemStatus() {
-        return SystemStatusCaller.builder(asyncClient);
+    public SystemStatus.SystemStatusBuilder aboutSystemStatus() {
+        return this.base.aboutSystemStatus();
     }
 
     /**
@@ -56,15 +58,15 @@ public class GeoserverConnector {
      * Status details always include human readable name, and module name.
      * Optional details include version, availability, status message, and links to documentation.
      */
-    public StatusCaller.Builder aboutStatus() {
-        return StatusCaller.builder(asyncClient);
+    public Status.Builder aboutStatus() {
+        return this.base.aboutStatus();
     }
 
     /**
      * This endpoint shows only the details for the high-level components: GeoServer, GeoTools, and GeoWebCache.
      */
-    public VersionCaller.Builder aboutVersion() {
-        return VersionCaller.builder(asyncClient);
+    public Version.Builder aboutVersion() {
+        return this.base.aboutVersion();
     }
 
     /**
@@ -74,8 +76,8 @@ public class GeoserverConnector {
      * they are needed by a request. This is useful in case the stores themselves cache
      * some information about the data structures they manage that may have changed in the meantime.
      */
-    public ResetCacheCaller.Builder resetCache() {
-        return ResetCacheCaller.builder(asyncClient);
+    public ResetCache.ResetCacheBuilder resetCache() {
+        return this.base.resetCache();
     }
 
     /**
@@ -85,15 +87,15 @@ public class GeoserverConnector {
      * force GeoServer to drop any internal caches and reconnect
      * to all data stores.
      */
-    public ReloadCaller.Builder reload() {
-        return ReloadCaller.builder(asyncClient);
+    public Reload.ReloadBuilder reload() {
+        return this.base.reload();
     }
 
     /**
      * Displays a list of all fonts on the server.
      */
-    public FontsCaller.Builder fonts() {
-        return FontsCaller.builder(asyncClient);
+    public Fonts.FontsBuilder fonts() {
+        return this.base.fonts();
     }
 
     /**
@@ -102,23 +104,23 @@ public class GeoserverConnector {
      * POST:
      * Updates logging settings on the server.
      */
-    public LoggingCaller.Builder logging() {
-        return LoggingCaller.builder(asyncClient);
+    public Logging.LoggingBuilder logging() {
+        return this.base.logging();
     }
 
-    public ResourceCaller.Builder resource() {
-        return ResourceCaller.builder(asyncClient);
+    public Resource.ResourcesBuilder resources() {
+        return this.base.resources();
     }
 
-    public CoverageStoresCaller.CoverageStoresBuilder coverageStores(String workspace) {
-        return CoverageStoresCaller.builder(asyncClient, workspace);
+    public Workspace.WorkspacesBuilder workspaces() {
+        return this.base.workspaces();
     }
 
 
     public static void main(String[] args) {
         GeoserverConnector connector = new GeoserverConnector("http://192.168.1.77:8080/geoserver/",
             "admin", "geoserver");
-        System.out.println(connector.resource().resource("workspaces").GET());
+        System.out.println(connector.resources().resource("workspaces").fetch());
 //        System.out.println(connector.aboutSystemStatus().GET());
     }
 }

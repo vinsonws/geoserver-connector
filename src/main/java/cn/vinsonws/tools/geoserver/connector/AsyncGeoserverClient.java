@@ -1,7 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector;
 
-import cn.vinsonws.tools.geoserver.connector.args.AbstractCaller;
-import cn.vinsonws.tools.geoserver.connector.args.WithBody;
+import cn.vinsonws.tools.geoserver.connector.caller.AbstractCaller;
+import cn.vinsonws.tools.geoserver.connector.caller.WithBody;
 
 import java.net.Authenticator;
 import java.net.URI;

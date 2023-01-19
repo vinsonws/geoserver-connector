@@ -1,4 +1,4 @@
-package cn.vinsonws.tools.geoserver.connector.args;
+package cn.vinsonws.tools.geoserver.connector.caller;
 
 import cn.vinsonws.tools.geoserver.connector.AsyncGeoserverClient;
 import cn.vinsonws.tools.geoserver.connector.RestConstant;
@@ -28,7 +28,7 @@ public abstract class AbstractCaller {
 
     private final Map<String, String> headers = new HashMap<>();
 
-    private Object requestBody;
+    private WithBody withBody;
 
     public void addParameter(String name, String value) {
         parameters.put(Objects.requireNonNull(name), Objects.requireNonNull(value));
@@ -48,10 +48,6 @@ public abstract class AbstractCaller {
 
     public void setMethod(RestConstant.Method method) {
         this.method = method;
-    }
-
-    public Object getRequestBody() {
-        return requestBody;
     }
 
     public RestConstant.Method getMethod() {
@@ -84,8 +80,8 @@ public abstract class AbstractCaller {
         return Collections.unmodifiableMap(headers);
     }
 
-    public void setRequestBody(Object requestBody) {
-        this.requestBody = requestBody;
+    public void setWithBody(WithBody withBody) {
+        this.withBody = withBody;
     }
 
 
@@ -95,7 +91,6 @@ public abstract class AbstractCaller {
             ", method=" + method +
             ", parameters=" + parameters +
             ", headers=" + headers +
-            ", requestBody=" + requestBody +
             '}';
     }
 
@@ -109,8 +104,7 @@ public abstract class AbstractCaller {
         if (!Objects.equals(api, that.api)) return false;
         if (method != that.method) return false;
         if (!parameters.equals(that.parameters)) return false;
-        if (!headers.equals(that.headers)) return false;
-        return Objects.equals(requestBody, that.requestBody);
+        return headers.equals(that.headers);
     }
 
     @Override
@@ -119,18 +113,17 @@ public abstract class AbstractCaller {
         result = 31 * result + method.hashCode();
         result = 31 * result + parameters.hashCode();
         result = 31 * result + headers.hashCode();
-        result = 31 * result + (requestBody != null ? requestBody.hashCode() : 0);
         return result;
     }
 
-    public static class Builder<B extends Builder<B, A>, A extends AbstractCaller> {
+    public abstract static class Builder<B extends Builder<B, A>, A extends AbstractCaller> {
         private String apiFormatter;
 
         private final Map<String, String> parameters = new HashMap<>();
 
         private final Map<String, String> headers = new HashMap<>();
 
-        private Object requestBody;
+        protected Object requestBody;
 
 
         public Builder(String apiFormatter) {
@@ -187,24 +180,10 @@ public abstract class AbstractCaller {
                 args.addHeader(entry.getKey(), entry.getValue());
             }
             args.setApi(apiFormatter);
-            args.setRequestBody(requestBody);
             return args;
         }
 
-        @SuppressWarnings("unchecked")
-        private A newInstance() {
-            try {
-                for (Constructor<?> constructor : this.getClass().getEnclosingClass().getDeclaredConstructors()) {
-                    if (constructor.getParameterCount() == 0) {
-                        return (A) constructor.newInstance();
-                    }
-                }
-
-                throw new RuntimeException(this.getClass().getEnclosingClass() + " must have no argument constructor");
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        protected abstract A newInstance();
 
         @Override
         public String toString() {
@@ -215,9 +194,9 @@ public abstract class AbstractCaller {
         }
     }
 
-    public static class ExecutableBuilder<B extends Builder<B, A>, A extends AbstractCaller>
-        extends Builder<B, A>
-        implements Executable<A> {
+    public static class ExecutableBuilder<B extends Builder<B, CommonCaller>>
+        extends Builder<B, CommonCaller>
+        implements Executable<CommonCaller> {
         private final AsyncGeoserverClient client;
 
         ExecutableBuilder(AsyncGeoserverClient client, String apiFormatter) {
@@ -225,7 +204,7 @@ public abstract class AbstractCaller {
             this.client = client;
         }
 
-        ExecutableBuilder(ExecutableBuilder<?, ?> other) {
+        ExecutableBuilder(ExecutableBuilder<?> other) {
             super(other);
             this.client = other.client;
         }
@@ -233,6 +212,11 @@ public abstract class AbstractCaller {
         @Override
         public AsyncGeoserverClient client() {
             return this.client;
+        }
+
+        @Override
+        protected CommonCaller newInstance() {
+            return new CommonCaller();
         }
     }
 
@@ -242,8 +226,8 @@ public abstract class AbstractCaller {
         AsyncGeoserverClient client();
     }
 
-    interface Get<A extends AbstractCaller, R> extends Executable<A> {
-        default A buildGetArgs() {
+    interface Get<R> extends Executable<CommonCaller> {
+        default CommonCaller buildGetArgs() {
             return build(RestConstant.Method.GET);
         }
 
@@ -277,9 +261,11 @@ public abstract class AbstractCaller {
         }
     }
 
-    interface Post<A extends AbstractCaller> extends Executable<A> {
-        default A buildPostArgs() {
-            return build(RestConstant.Method.POST);
+    interface Post extends Executable<CommonCaller> {
+        default CommonCaller buildPostArgs() {
+            var arg = build(RestConstant.Method.POST);
+            arg.setWithBody(withPostBody());
+            return arg;
         }
 
         default void POST() {
@@ -300,11 +286,15 @@ public abstract class AbstractCaller {
                 throw new RuntimeException(e);
             }
         }
+
+        WithBody withPostBody();
     }
 
-    interface Put<A extends AbstractCaller> extends Executable<A> {
-        default A buildPutArgs() {
-            return build(RestConstant.Method.PUT);
+    interface Put extends Executable<CommonCaller> {
+        default CommonCaller buildPutArgs() {
+            var arg = build(RestConstant.Method.PUT);
+            arg.setWithBody(withPutBody());
+            return arg;
         }
 
         default void PUT() {
@@ -324,10 +314,12 @@ public abstract class AbstractCaller {
                 throw new RuntimeException(e);
             }
         }
+
+        WithBody withPutBody();
     }
 
-    interface Delete<A extends AbstractCaller> extends Executable<A> {
-        default A buildDeleteArgs() {
+    interface Delete extends Executable<CommonCaller> {
+        default CommonCaller buildDeleteArgs() {
             return build(RestConstant.Method.DELETE);
         }
 
