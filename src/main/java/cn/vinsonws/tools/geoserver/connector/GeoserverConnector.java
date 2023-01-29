@@ -22,7 +22,7 @@ public class GeoserverConnector {
                         return new PasswordAuthentication(userName, password.toCharArray());
                     }
                 });
-        this.base = Base.base(this.asyncClient, "/rest");
+        this.base = Base.base(this.asyncClient);
     }
 
     /**
@@ -114,6 +114,10 @@ public class GeoserverConnector {
 
     public Workspace.WorkspacesBuilder workspaces() {
         return this.base.workspaces();
+    }
+
+    public Namespace.NamespacesBuilder namespaces() {
+        return this.base.namespaces();
     }
 
 

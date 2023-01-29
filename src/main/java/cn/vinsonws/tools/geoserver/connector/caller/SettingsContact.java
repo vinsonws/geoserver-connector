@@ -17,10 +17,5 @@ public final class SettingsContact {
             super(other);
             appendApi(EXTEND_API);
         }
-
-        @Override
-        public WithBody withPostBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 }

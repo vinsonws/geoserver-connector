@@ -1,19 +1,27 @@
 package cn.vinsonws.tools.geoserver.connector.caller;
 
 import cn.vinsonws.tools.geoserver.connector.AsyncGeoserverClient;
+import cn.vinsonws.tools.geoserver.connector.caller.gwc.GeoWebCache;
 
 /**
  * @author Vinsonws
  */
 public final class Base {
 
-    public static BaseBuilder base(AsyncGeoserverClient client, String apiFormatter) {
-        return new BaseBuilder(client, apiFormatter);
+    public static BaseBuilder base(AsyncGeoserverClient client) {
+        return new BaseBuilder(client);
     }
 
     public static class BaseBuilder extends AbstractCaller.ExecutableBuilder<BaseBuilder> {
-        BaseBuilder(AsyncGeoserverClient client, String apiFormatter) {
-            super(client, apiFormatter);
+
+        static final String EXTEND_API = "/rest";
+
+        BaseBuilder(AsyncGeoserverClient client) {
+            super(client, EXTEND_API);
+        }
+
+        public GeoWebCache.GeoWebCacheBuilder gwc() {
+            return new GeoWebCache.GeoWebCacheBuilder(super.client());
         }
 
         public Manifest.ManifestBuilder aboutManifest() {
@@ -54,6 +62,10 @@ public final class Base {
 
         public Workspace.WorkspacesBuilder workspaces() {
             return new Workspace.WorkspacesBuilder(this);
+        }
+
+        public Namespace.NamespacesBuilder namespaces() {
+            return new Namespace.NamespacesBuilder(this);
         }
     }
 }

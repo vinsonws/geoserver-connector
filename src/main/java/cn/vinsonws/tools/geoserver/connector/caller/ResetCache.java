@@ -18,9 +18,5 @@ public final class ResetCache {
             this.POST();
         }
 
-        @Override
-        public WithBody withPostBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 }

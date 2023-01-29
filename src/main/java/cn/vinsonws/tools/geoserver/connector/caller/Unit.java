@@ -10,11 +10,6 @@ public final class Unit {
             super(other);
             appendApi("/" + method + "." + format);
         }
-
-        @Override
-        public WithBody withPutBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 
 }

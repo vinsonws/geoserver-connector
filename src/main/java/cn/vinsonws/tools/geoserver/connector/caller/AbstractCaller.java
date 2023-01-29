@@ -199,12 +199,12 @@ public abstract class AbstractCaller {
         implements Executable<CommonCaller> {
         private final AsyncGeoserverClient client;
 
-        ExecutableBuilder(AsyncGeoserverClient client, String apiFormatter) {
+        protected ExecutableBuilder(AsyncGeoserverClient client, String apiFormatter) {
             super(apiFormatter);
             this.client = client;
         }
 
-        ExecutableBuilder(ExecutableBuilder<?> other) {
+        protected ExecutableBuilder(ExecutableBuilder<?> other) {
             super(other);
             this.client = other.client;
         }
@@ -218,6 +218,14 @@ public abstract class AbstractCaller {
         protected CommonCaller newInstance() {
             return new CommonCaller();
         }
+
+        public WithBody withPutBody() {
+            return WithBodies.JSON(requestBody);
+        }
+
+        public WithBody withPostBody() {
+            return WithBodies.JSON(requestBody);
+        }
     }
 
     interface Executable<A extends AbstractCaller> {
@@ -226,7 +234,7 @@ public abstract class AbstractCaller {
         AsyncGeoserverClient client();
     }
 
-    interface Get<R> extends Executable<CommonCaller> {
+    public interface Get<R> extends Executable<CommonCaller> {
         default CommonCaller buildGetArgs() {
             return build(RestConstant.Method.GET);
         }
@@ -261,7 +269,7 @@ public abstract class AbstractCaller {
         }
     }
 
-    interface Post extends Executable<CommonCaller> {
+    public interface Post extends Executable<CommonCaller> {
         default CommonCaller buildPostArgs() {
             var arg = build(RestConstant.Method.POST);
             arg.setWithBody(withPostBody());
@@ -290,7 +298,7 @@ public abstract class AbstractCaller {
         WithBody withPostBody();
     }
 
-    interface Put extends Executable<CommonCaller> {
+    public interface Put extends Executable<CommonCaller> {
         default CommonCaller buildPutArgs() {
             var arg = build(RestConstant.Method.PUT);
             arg.setWithBody(withPutBody());
@@ -318,7 +326,7 @@ public abstract class AbstractCaller {
         WithBody withPutBody();
     }
 
-    interface Delete extends Executable<CommonCaller> {
+    public interface Delete extends Executable<CommonCaller> {
         default CommonCaller buildDeleteArgs() {
             return build(RestConstant.Method.DELETE);
         }

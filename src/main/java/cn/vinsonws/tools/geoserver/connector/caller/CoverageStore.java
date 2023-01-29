@@ -21,11 +21,6 @@ public final class CoverageStore {
         public StoreBuilder store(String store) {
             return new StoreBuilder(this, store);
         }
-
-        @Override
-        public WithBody withPostBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 
     public static final class StoreBuilder extends AbstractCaller.ExecutableBuilder<StoreBuilder>

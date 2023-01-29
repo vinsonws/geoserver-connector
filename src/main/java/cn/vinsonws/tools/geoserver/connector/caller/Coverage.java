@@ -26,11 +26,6 @@ public final class Coverage {
         public CoverageBuilder coverage(String coverage) {
             return new CoverageBuilder(this, coverage);
         }
-
-        @Override
-        public WithBody withPostBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 
     public static final class CoverageBuilder
@@ -47,11 +42,6 @@ public final class Coverage {
 
         public ResetCache.ResetCacheBuilder reset() {
             return new ResetCache.ResetCacheBuilder(this);
-        }
-
-        @Override
-        public WithBody withPutBody() {
-            return WithBodies.JSON(requestBody);
         }
     }
 }

@@ -30,11 +30,6 @@ public final class Workspace {
             this.requestBody(Map.of("name", workspaceName));
             this.POST();
         }
-
-        @Override
-        public WithBody withPostBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 
     public static final class WorkspaceBuilder
@@ -55,11 +50,6 @@ public final class Workspace {
             this.requestBody(Map.of("name", workspaceName));
             this.PUT();
         }
-
-        @Override
-        public WithBody withPutBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 
     public static final class DefaultWorkspaceBuilder
@@ -76,11 +66,6 @@ public final class Workspace {
         public void update(String existWorkspaceName) {
             this.requestBody(Map.of("workspace", Map.of("name", existWorkspaceName)));
             this.PUT();
-        }
-
-        @Override
-        public WithBody withPutBody() {
-            return WithBodies.JSON(requestBody);
         }
     }
 }

@@ -14,9 +14,6 @@ public final class Reload  {
             appendApi(EXTEND_API);
         }
 
-        @Override
-        public WithBody withPostBody() {
-            return WithBodies.JSON(requestBody);
-        }
+
     }
 }

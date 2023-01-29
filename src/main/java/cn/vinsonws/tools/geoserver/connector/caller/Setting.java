@@ -16,10 +16,5 @@ public final class Setting {
             super(other);
             appendApi(EXTEND_API);
         }
-
-        @Override
-        public WithBody withPostBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 }

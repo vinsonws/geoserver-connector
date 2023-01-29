@@ -53,10 +53,5 @@ public final class DataStore {
         public ResetCache.ResetCacheBuilder reset() {
             return new ResetCache.ResetCacheBuilder(this);
         }
-
-        @Override
-        public WithBody withPutBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 }

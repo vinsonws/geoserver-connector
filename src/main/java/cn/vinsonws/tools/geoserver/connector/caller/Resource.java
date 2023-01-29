@@ -23,11 +23,6 @@ public final class Resource {
         public ResourceBuilder resource(String resource) {
             return new ResourceBuilder(this, resource);
         }
-
-        @Override
-        public WithBody withPutBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 
     public static final class ResourceBuilder extends AbstractCaller.ExecutableBuilder<ResourceBuilder>
@@ -38,11 +33,6 @@ public final class Resource {
         ResourceBuilder(AbstractCaller.ExecutableBuilder<?> other, String resource) {
             super(other);
             appendApi("/" + resource);
-        }
-
-        @Override
-        public WithBody withPutBody() {
-            return WithBodies.JSON(requestBody);
         }
     }
 }
