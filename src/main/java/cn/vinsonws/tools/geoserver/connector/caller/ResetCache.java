@@ -15,8 +15,7 @@ public final class ResetCache {
         }
 
         public void clean() {
-            this.POST();
+            this.create();
         }
-
     }
 }

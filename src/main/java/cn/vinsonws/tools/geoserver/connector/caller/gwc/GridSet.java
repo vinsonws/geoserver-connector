@@ -32,9 +32,5 @@ public final class GridSet {
             appendApi("/" + gridsetName);
         }
 
-        public void update(Object o) {
-            requestBody(o);
-            this.PUT();
-        }
     }
 }

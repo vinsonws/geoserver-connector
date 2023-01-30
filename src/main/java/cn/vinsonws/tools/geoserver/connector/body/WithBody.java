@@ -1,4 +1,4 @@
-package cn.vinsonws.tools.geoserver.connector.caller;
+package cn.vinsonws.tools.geoserver.connector.body;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +29,20 @@ public interface WithBody {
 
         Object getRequestBody();
     }
+
+    class JsonBody implements Json {
+        private final Object o;
+
+        protected JsonBody(Object o) {
+            this.o = o;
+        }
+
+        @Override
+        public Object getRequestBody() {
+            return o;
+        }
+    }
+
 
     interface Empty extends WithBody {
         @Override

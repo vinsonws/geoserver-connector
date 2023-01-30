@@ -1,7 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector;
 
 import cn.vinsonws.tools.geoserver.connector.caller.AbstractCaller;
-import cn.vinsonws.tools.geoserver.connector.caller.WithBody;
+import cn.vinsonws.tools.geoserver.connector.body.WithBody;
 
 import java.net.Authenticator;
 import java.net.URI;
@@ -26,14 +26,25 @@ public class AsyncGeoserverClient {
             this.client = HttpClient.newBuilder().authenticator(authenticator).build();
     }
 
-    public CompletableFuture<HttpResponse<String>> executeAsync(AbstractCaller args) {
-        return switch (args.getMethod()) {
-            case GET -> executeAsyncGet(args);
-            case POST -> executeAsyncPost(args);
-            case PUT -> executeAsyncPut(args);
-            case DELETE -> executeAsyncDelete(args);
-            default -> throw new UnsupportedOperationException(args.getMethod() + " method not supported");
-        };
+    public CompletableFuture<HttpResponse<String>> executeAsync(AbstractCaller args, WithBody withBody) {
+        CompletableFuture<HttpResponse<String>> resp;
+        switch (args.getMethod()) {
+            case GET:
+                resp = executeAsyncGet(args);
+                break;
+            case POST:
+                resp = executeAsyncPost(args, withBody);
+                break;
+            case PUT:
+                resp = executeAsyncPut(args, withBody);
+                break;
+            case DELETE:
+                resp = executeAsyncDelete(args);
+                break;
+            default:
+                throw new UnsupportedOperationException(args.getMethod() + " method not supported");
+        }
+        return resp;
     }
 
     private CompletableFuture<HttpResponse<String>> executeAsyncGet(AbstractCaller args) {
@@ -48,14 +59,10 @@ public class AsyncGeoserverClient {
             HttpResponse.BodyHandlers.ofString());
     }
 
-    private CompletableFuture<HttpResponse<String>> executeAsyncPost(AbstractCaller args) {
+    private CompletableFuture<HttpResponse<String>> executeAsyncPost(AbstractCaller args, WithBody withBody) {
         HttpRequest.Builder builder = HttpRequest
             .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize());
-        if (args instanceof WithBody withBody) {
-            builder = builder.POST(withBody.getBodyPublisher());
-        } else {
-            throw new IllegalArgumentException(args.getMethod() + " must implement WithBody");
-        }
+        builder = builder.POST(withBody.getBodyPublisher());
         for (Map.Entry<String, String> entry : args.getHeaders().entrySet()) {
             builder.header(entry.getKey(), entry.getValue());
         }
@@ -64,14 +71,11 @@ public class AsyncGeoserverClient {
             HttpResponse.BodyHandlers.ofString());
     }
 
-    private CompletableFuture<HttpResponse<String>> executeAsyncPut(AbstractCaller args) {
+    private CompletableFuture<HttpResponse<String>> executeAsyncPut(AbstractCaller args, WithBody withBody) {
         HttpRequest.Builder builder = HttpRequest
             .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize());
-        if (args instanceof WithBody withBody) {
-            builder = builder.PUT(withBody.getBodyPublisher());
-        } else {
-            throw new IllegalArgumentException(args.getMethod() + " must implement WithBody");
-        }
+        builder = builder.PUT(withBody.getBodyPublisher());
+
         for (Map.Entry<String, String> entry : args.getHeaders().entrySet()) {
             builder.header(entry.getKey(), entry.getValue());
         }

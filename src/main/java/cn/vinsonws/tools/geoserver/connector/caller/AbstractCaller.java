@@ -2,14 +2,14 @@ package cn.vinsonws.tools.geoserver.connector.caller;
 
 import cn.vinsonws.tools.geoserver.connector.AsyncGeoserverClient;
 import cn.vinsonws.tools.geoserver.connector.RestConstant;
+import cn.vinsonws.tools.geoserver.connector.body.WithBodies;
+import cn.vinsonws.tools.geoserver.connector.body.WithBody;
 import cn.vinsonws.tools.geoserver.connector.exception.GeoserverServiceFailedRuntimeException;
 import cn.vinsonws.tools.geoserver.connector.util.HttpUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +27,6 @@ public abstract class AbstractCaller {
     private final Map<String, String> parameters = new HashMap<>();
 
     private final Map<String, String> headers = new HashMap<>();
-
-    private WithBody withBody;
 
     public void addParameter(String name, String value) {
         parameters.put(Objects.requireNonNull(name), Objects.requireNonNull(value));
@@ -80,10 +78,6 @@ public abstract class AbstractCaller {
         return Collections.unmodifiableMap(headers);
     }
 
-    public void setWithBody(WithBody withBody) {
-        this.withBody = withBody;
-    }
-
 
     @Override
     public String toString() {
@@ -123,15 +117,11 @@ public abstract class AbstractCaller {
 
         private final Map<String, String> headers = new HashMap<>();
 
-        protected Object requestBody;
-
-
         public Builder(String apiFormatter) {
             this.apiFormatter = apiFormatter;
         }
 
         public Builder(Builder<?, ?> other) {
-            this.requestBody = null;
             this.parameters.putAll(other.parameters);
             this.headers.putAll(other.headers);
             this.apiFormatter = other.apiFormatter;
@@ -153,16 +143,6 @@ public abstract class AbstractCaller {
         public B header(String name, String value) {
             this.headers.put(Objects.requireNonNull(name), Objects.requireNonNull(value));
             return (B) this;
-        }
-
-        @SuppressWarnings("unchecked")
-        public B requestBody(Object requestBody) {
-            this.requestBody = requestBody;
-            return (B) this;
-        }
-
-        public Object getRequestBody() {
-            return requestBody;
         }
 
         public A build(RestConstant.Method method) {
@@ -218,14 +198,6 @@ public abstract class AbstractCaller {
         protected CommonCaller newInstance() {
             return new CommonCaller();
         }
-
-        public WithBody withPutBody() {
-            return WithBodies.JSON(requestBody);
-        }
-
-        public WithBody withPostBody() {
-            return WithBodies.JSON(requestBody);
-        }
     }
 
     interface Executable<A extends AbstractCaller> {
@@ -245,7 +217,7 @@ public abstract class AbstractCaller {
 
         default R GET() {
             try {
-                return client().executeAsync(buildGetArgs())
+                return client().executeAsync(buildGetArgs(), null)
                     .thenApply(response -> {
                         if (!HttpUtils.validateResponse(response)) {
                             throw new GeoserverServiceFailedRuntimeException(response.statusCode());
@@ -261,8 +233,8 @@ public abstract class AbstractCaller {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
-                if (e.getCause() instanceof GeoserverServiceFailedRuntimeException re) {
-                    throw re;
+                if (e.getCause() instanceof GeoserverServiceFailedRuntimeException) {
+                    throw (GeoserverServiceFailedRuntimeException) e.getCause();
                 }
                 throw new RuntimeException(e);
             }
@@ -271,43 +243,44 @@ public abstract class AbstractCaller {
 
     public interface Post extends Executable<CommonCaller> {
         default CommonCaller buildPostArgs() {
-            var arg = build(RestConstant.Method.POST);
-            arg.setWithBody(withPostBody());
-            return arg;
+            return build(RestConstant.Method.POST);
         }
 
-        default void POST() {
+        default void POST(WithBody withBody) {
             try {
-                client().executeAsync(buildPostArgs())
+                client().executeAsync(buildPostArgs(), withBody)
                     .thenAccept(response -> {
                         if (!HttpUtils.validateResponse(response)) {
                             throw new GeoserverServiceFailedRuntimeException(response.statusCode());
                         }
-
                     }).get();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
-                if (e.getCause() instanceof GeoserverServiceFailedRuntimeException re) {
-                    throw re;
+                if (e.getCause() instanceof GeoserverServiceFailedRuntimeException) {
+                    throw (GeoserverServiceFailedRuntimeException) e.getCause();
                 }
                 throw new RuntimeException(e);
             }
         }
 
-        WithBody withPostBody();
+        default void create() {
+            this.POST(WithBodies.EMPTY);
+        }
+
+        default void create(WithBody withBody) {
+            this.POST(withBody);
+        }
     }
 
     public interface Put extends Executable<CommonCaller> {
         default CommonCaller buildPutArgs() {
-            var arg = build(RestConstant.Method.PUT);
-            arg.setWithBody(withPutBody());
-            return arg;
+            return build(RestConstant.Method.PUT);
         }
 
-        default void PUT() {
+        default void PUT(WithBody withBody) {
             try {
-                client().executeAsync(buildPutArgs())
+                client().executeAsync(buildPutArgs(), withBody)
                     .thenAccept(response -> {
                         if (!HttpUtils.validateResponse(response)) {
                             throw new GeoserverServiceFailedRuntimeException(response.statusCode());
@@ -316,14 +289,20 @@ public abstract class AbstractCaller {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
-                if (e.getCause() instanceof GeoserverServiceFailedRuntimeException re) {
-                    throw re;
+                if (e.getCause() instanceof GeoserverServiceFailedRuntimeException) {
+                    throw (GeoserverServiceFailedRuntimeException) e.getCause();
                 }
                 throw new RuntimeException(e);
             }
         }
 
-        WithBody withPutBody();
+        default void update() {
+            this.PUT(WithBodies.EMPTY);
+        }
+
+        default void update(WithBody withBody) {
+            this.PUT(withBody);
+        }
     }
 
     public interface Delete extends Executable<CommonCaller> {
@@ -337,7 +316,7 @@ public abstract class AbstractCaller {
 
         default void DELETE() {
             try {
-                client().executeAsync(buildDeleteArgs())
+                client().executeAsync(buildDeleteArgs(), null)
                     .thenAccept(response -> {
                         if (!HttpUtils.validateResponse(response)) {
                             throw new GeoserverServiceFailedRuntimeException(response.statusCode());
@@ -346,8 +325,8 @@ public abstract class AbstractCaller {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
-                if (e.getCause() instanceof GeoserverServiceFailedRuntimeException re) {
-                    throw re;
+                if (e.getCause() instanceof GeoserverServiceFailedRuntimeException) {
+                    throw (GeoserverServiceFailedRuntimeException) e.getCause();
                 }
                 throw new RuntimeException(e);
             }

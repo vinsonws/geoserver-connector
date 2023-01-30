@@ -1,8 +1,6 @@
 package cn.vinsonws.tools.geoserver.connector.caller.gwc;
 
 import cn.vinsonws.tools.geoserver.connector.caller.AbstractCaller;
-import cn.vinsonws.tools.geoserver.connector.caller.WithBodies;
-import cn.vinsonws.tools.geoserver.connector.caller.WithBody;
 
 import java.util.Map;
 
@@ -18,9 +16,5 @@ public final class MassTruncate {
             appendApi(EXTEND_API);
         }
 
-        public void issue(Object o) {
-            requestBody(o);
-            this.POST();
-        }
     }
 }

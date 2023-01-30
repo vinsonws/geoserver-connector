@@ -1,8 +1,6 @@
 package cn.vinsonws.tools.geoserver.connector.caller.gwc;
 
 import cn.vinsonws.tools.geoserver.connector.caller.AbstractCaller;
-import cn.vinsonws.tools.geoserver.connector.caller.WithBodies;
-import cn.vinsonws.tools.geoserver.connector.caller.WithBody;
 
 import java.util.Map;
 
@@ -16,10 +14,6 @@ public final class DiskQuota {
         DiskQuotaBuilder(AbstractCaller.ExecutableBuilder<?> other) {
             super(other);
             appendApi(EXTEND_API);
-        }
-        public void update(Object o) {
-            requestBody(o);
-            this.PUT();
         }
     }
 }

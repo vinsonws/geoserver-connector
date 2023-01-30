@@ -1,5 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector.caller;
 
+import cn.vinsonws.tools.geoserver.connector.body.WithBodies;
+
 import java.util.Map;
 
 public final class Namespace {
@@ -20,8 +22,7 @@ public final class Namespace {
 
 
         public void create(String prefix, String uri) {
-            this.requestBody(Map.of("prefix", prefix, "name", uri));
-            this.POST();
+            this.create(WithBodies.JSON(Map.of("prefix", prefix, "name", uri)));
         }
     }
 

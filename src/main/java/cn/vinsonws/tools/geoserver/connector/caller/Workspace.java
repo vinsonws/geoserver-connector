@@ -1,5 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector.caller;
 
+import cn.vinsonws.tools.geoserver.connector.body.WithBodies;
+
 import java.util.Map;
 
 /**
@@ -27,8 +29,7 @@ public final class Workspace {
         }
 
         public void create(String workspaceName) {
-            this.requestBody(Map.of("name", workspaceName));
-            this.POST();
+            this.create(WithBodies.JSON(Map.of("name", workspaceName)));
         }
     }
 
@@ -47,8 +48,7 @@ public final class Workspace {
         }
 
         public void update(String workspaceName) {
-            this.requestBody(Map.of("name", workspaceName));
-            this.PUT();
+            this.update(WithBodies.JSON(Map.of("name", workspaceName)));
         }
     }
 
@@ -64,8 +64,7 @@ public final class Workspace {
         }
 
         public void update(String existWorkspaceName) {
-            this.requestBody(Map.of("workspace", Map.of("name", existWorkspaceName)));
-            this.PUT();
+            this.update(WithBodies.JSON(Map.of("workspace", Map.of("name", existWorkspaceName))));
         }
     }
 }

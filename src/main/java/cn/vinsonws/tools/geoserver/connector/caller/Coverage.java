@@ -18,11 +18,6 @@ public final class Coverage {
             appendApi(EXTEND_API);
         }
 
-        public void create(Object coverage) {
-            this.requestBody(Map.of("coverage", coverage));
-            this.POST();
-        }
-
         public CoverageBuilder coverage(String coverage) {
             return new CoverageBuilder(this, coverage);
         }
@@ -37,8 +32,6 @@ public final class Coverage {
             super(other);
             appendApi("/" + name);
         }
-
-//        public void update() todo
 
         public ResetCache.ResetCacheBuilder reset() {
             return new ResetCache.ResetCacheBuilder(this);

@@ -31,10 +31,6 @@ public final class Layer {
             appendApi("/" + layerName);
         }
 
-        public void createOrUpdate(Object o) {
-            requestBody(o);
-            this.PUT();
-        }
     }
 
 }

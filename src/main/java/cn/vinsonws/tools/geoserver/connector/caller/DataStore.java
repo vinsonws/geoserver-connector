@@ -17,20 +17,8 @@ public final class DataStore {
             appendApi(EXTEND_API);
         }
 
-        public void create(String dataStore) {
-            // todo args solution
-            this.requestBody(Map.of("dataStore", dataStore));
-            this.POST();
-
-        }
-
         public DataStoreBuilder dataStore(String name) {
             return new DataStoreBuilder(this, name);
-        }
-
-        @Override
-        public WithBody withPostBody() {
-            return WithBodies.JSON(requestBody);
         }
     }
 
@@ -43,12 +31,6 @@ public final class DataStore {
             super(other);
             appendApi("/" + name);
         }
-
-//        public void update(String dataStore) {
-//            // todo args solution
-//            this.requestBody(Map.of("dataStore", dataStore));
-//            this.PUT();
-//        }
 
         public ResetCache.ResetCacheBuilder reset() {
             return new ResetCache.ResetCacheBuilder(this);
