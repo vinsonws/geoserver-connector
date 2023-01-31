@@ -1,5 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector.caller;
 
+import cn.vinsonws.tools.geoserver.connector.util.Verification;
+
 import java.util.Map;
 
 /**
@@ -19,7 +21,7 @@ public final class CoverageStore {
         }
 
         public StoreBuilder store(String store) {
-            return new StoreBuilder(this, store);
+            return new StoreBuilder(this, Verification.validateNotEmptyString("store", store));
         }
     }
 
@@ -33,7 +35,9 @@ public final class CoverageStore {
         }
 
         public Unit.MethodFormatBuilder methodFormat(String method, String format) {
-            return new Unit.MethodFormatBuilder(this, method, format);
+            return new Unit.MethodFormatBuilder(this,
+                Verification.validateNotEmptyString("method", method),
+                Verification.validateNotEmptyString("format", format));
         }
 
         public ResetCache.ResetCacheBuilder reset() {

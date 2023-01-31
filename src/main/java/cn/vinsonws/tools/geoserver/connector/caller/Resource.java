@@ -1,5 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector.caller;
 
+import cn.vinsonws.tools.geoserver.connector.util.Verification;
+
 import java.util.Map;
 
 /**
@@ -21,7 +23,7 @@ public final class Resource {
         }
 
         public ResourceBuilder resource(String resource) {
-            return new ResourceBuilder(this, resource);
+            return new ResourceBuilder(this, Verification.validateNotEmptyString("resource", resource));
         }
     }
 

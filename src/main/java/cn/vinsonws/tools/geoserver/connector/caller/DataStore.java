@@ -1,5 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector.caller;
 
+import cn.vinsonws.tools.geoserver.connector.util.Verification;
+
 import java.util.Map;
 
 /**
@@ -18,7 +20,7 @@ public final class DataStore {
         }
 
         public DataStoreBuilder dataStore(String name) {
-            return new DataStoreBuilder(this, name);
+            return new DataStoreBuilder(this, Verification.validateNotEmptyString("name", name));
         }
     }
 

@@ -1,5 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector.caller;
 
+import cn.vinsonws.tools.geoserver.connector.util.Verification;
+
 import java.util.Map;
 
 /**
@@ -19,7 +21,7 @@ public final class Coverage {
         }
 
         public CoverageBuilder coverage(String coverage) {
-            return new CoverageBuilder(this, coverage);
+            return new CoverageBuilder(this, Verification.validateNotEmptyString("coverage", coverage));
         }
     }
 

@@ -1,6 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector.caller;
 
 import cn.vinsonws.tools.geoserver.connector.body.WithBodies;
+import cn.vinsonws.tools.geoserver.connector.util.Verification;
 
 import java.util.Map;
 
@@ -17,12 +18,14 @@ public final class Namespace {
         }
 
         public NamespaceBuilder namespace(String namespaceName) {
-            return new NamespaceBuilder(this, namespaceName);
+            return new NamespaceBuilder(this, Verification.validateNotEmptyString("namespaceName", namespaceName));
         }
 
 
         public void create(String prefix, String uri) {
-            this.create(WithBodies.JSON(Map.of("prefix", prefix, "name", uri)));
+            this.create(WithBodies.JSON(Map.of("prefix",
+                Verification.validateNotEmptyString("prefix", prefix), "name",
+                Verification.validateNotEmptyString("uri", uri))));
         }
     }
 
