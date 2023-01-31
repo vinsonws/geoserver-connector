@@ -3,8 +3,13 @@ package cn.vinsonws.tools.geoserver.connector.body;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Vinsonws
@@ -14,6 +19,8 @@ public interface WithBody {
      * Customized
      */
     HttpRequest.BodyPublisher getBodyPublisher();
+
+    void validate();
 
     interface Json extends WithBody {
         @Override
@@ -41,6 +48,10 @@ public interface WithBody {
         public Object getRequestBody() {
             return o;
         }
+
+        @Override
+        public void validate() {
+        }
     }
 
 
@@ -48,6 +59,36 @@ public interface WithBody {
         @Override
         default HttpRequest.BodyPublisher getBodyPublisher() {
             return HttpRequest.BodyPublishers.noBody();
+        }
+    }
+
+    abstract class Builder<B extends Builder<B, A>, A extends WithBody> {
+        protected List<Consumer<A>> operations = new ArrayList<>();
+
+        @SuppressWarnings("unchecked")
+        private A newInstance() {
+            try {
+                for (Constructor<?> constructor :
+                    this.getClass().getEnclosingClass().getDeclaredConstructors()) {
+                    if (constructor.getParameterCount() == 0) {
+                        return (A) constructor.newInstance();
+                    }
+                }
+                throw new RuntimeException(
+                    this.getClass().getEnclosingClass() + " must have no argument constructor");
+            } catch (InstantiationException
+                     | IllegalAccessException
+                     | InvocationTargetException
+                     | SecurityException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public A build() throws IllegalArgumentException {
+            A body = newInstance();
+            operations.forEach(operation -> operation.accept(body));
+            body.validate();
+            return body;
         }
     }
 }

@@ -9,5 +9,8 @@ public final class WithBodies {
     }
 
     public final static WithBody EMPTY = new WithBody.Empty() {
+        @Override
+        public void validate() {
+        }
     };
 }
