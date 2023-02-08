@@ -7,6 +7,27 @@
     <version>0.1-dev-${maven.build.timestamp}</version>
     <name>geoserver-connector</name>
     <description>Connectors for GeoServer</description>
+    <developers>
+        <developer>
+            <name>vinsonws</name>
+            <email>vinsonws@qq.com</email>
+            <roles>
+                <role>Owner</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache-2.0 license</name>
+            <url>https://opensource.org/licenses/Apache-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/vinsonws/geoserver-connector</url>
+        <connection>https://github.com/vinsonws/geoserver-connector.git</connection>
+    </scm>
     <properties>
         <java.version>11</java.version>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
@@ -36,5 +57,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <name>Central Repository OSSRH</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
