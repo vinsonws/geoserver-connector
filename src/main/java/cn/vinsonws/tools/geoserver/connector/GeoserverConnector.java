@@ -31,8 +31,6 @@ public class GeoserverConnector {
      * filtering capabilities to search for a set of manifests using regular expressions
      * (see the manifest parameter) or a type category (see the key and value parameter).
      * <br>
-     * The available types are core, extension, or community. To filter modules by a particular
-     * type, append a request with key=GeoServerModule&value={type}
      * <br>
      * Use the “Accept:” header to specify format or append an extension to the endpoint
      * (example “/about/manifest.xml” for XML).
@@ -40,6 +38,7 @@ public class GeoserverConnector {
      * The model is very simple and is shared between the version and the resource requests
      * to parse both requests. You can customize the results adding a properties file called
      * manifest.properties into the root of the data directory.
+     * @return Manifest.ManifestBuilder
      */
     public Manifest.ManifestBuilder aboutManifest() {
         return this.base.aboutManifest();
@@ -48,6 +47,7 @@ public class GeoserverConnector {
     /**
      * Returns a list of system-level information. Major operating systems
      * (Linux, Windows and MacOX) are supported out of the box.
+     * @return SystemStatus.SystemStatusBuilder
      */
     public SystemStatus.SystemStatusBuilder aboutSystemStatus() {
         return this.base.aboutSystemStatus();
@@ -57,6 +57,7 @@ public class GeoserverConnector {
      * This endpoint shows the status details of all installed and configured modules.
      * Status details always include human readable name, and module name.
      * Optional details include version, availability, status message, and links to documentation.
+     * @return Status.Builder
      */
     public Status.Builder aboutStatus() {
         return this.base.aboutStatus();
@@ -64,6 +65,7 @@ public class GeoserverConnector {
 
     /**
      * This endpoint shows only the details for the high-level components: GeoServer, GeoTools, and GeoWebCache.
+     * @return Version.Builder
      */
     public Version.Builder aboutVersion() {
         return this.base.aboutVersion();
@@ -75,6 +77,7 @@ public class GeoserverConnector {
      * and store connections and reconnect to each of them the next time
      * they are needed by a request. This is useful in case the stores themselves cache
      * some information about the data structures they manage that may have changed in the meantime.
+     * @return ResetCache.ResetCacheBuilder
      */
     public ResetCache.ResetCacheBuilder resetCache() {
         return this.base.resetCache();
@@ -86,6 +89,7 @@ public class GeoserverConnector {
      * modified the on-disk configuration. This operation will also
      * force GeoServer to drop any internal caches and reconnect
      * to all data stores.
+     * @return Reload.ReloadBuilder
      */
     public Reload.ReloadBuilder reload() {
         return this.base.reload();
@@ -93,6 +97,7 @@ public class GeoserverConnector {
 
     /**
      * Displays a list of all fonts on the server.
+     * @return Fonts.FontsBuilder
      */
     public Fonts.FontsBuilder fonts() {
         return this.base.fonts();
@@ -103,6 +108,7 @@ public class GeoserverConnector {
      * Displays a list of all logging settings on the server.
      * POST:
      * Updates logging settings on the server.
+     * @return Logging.LoggingBuilder
      */
     public Logging.LoggingBuilder logging() {
         return this.base.logging();

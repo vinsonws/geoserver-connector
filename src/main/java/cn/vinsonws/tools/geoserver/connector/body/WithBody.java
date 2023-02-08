@@ -15,9 +15,6 @@ import java.util.function.Consumer;
  * @author Vinsonws
  */
 public interface WithBody {
-    /**
-     * Customized
-     */
     HttpRequest.BodyPublisher getBodyPublisher();
 
     void validate();
