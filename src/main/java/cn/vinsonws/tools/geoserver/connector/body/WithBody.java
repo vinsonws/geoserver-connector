@@ -62,33 +62,33 @@ public interface WithBody {
         }
     }
 
-    abstract class Builder<B extends Builder<B, A>, A extends WithBody> {
-        protected List<Consumer<A>> operations = new ArrayList<>();
-
-        @SuppressWarnings("unchecked")
-        private A newInstance() {
-            try {
-                for (Constructor<?> constructor :
-                    this.getClass().getEnclosingClass().getDeclaredConstructors()) {
-                    if (constructor.getParameterCount() == 0) {
-                        return (A) constructor.newInstance();
-                    }
-                }
-                throw new RuntimeException(
-                    this.getClass().getEnclosingClass() + " must have no argument constructor");
-            } catch (InstantiationException
-                     | IllegalAccessException
-                     | InvocationTargetException
-                     | SecurityException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public A build() throws IllegalArgumentException {
-            A body = newInstance();
-            operations.forEach(operation -> operation.accept(body));
-            body.validate();
-            return body;
-        }
-    }
+//    abstract class Builder<B extends Builder<B, A>, A extends WithBody> {
+//        protected List<Consumer<A>> operations = new ArrayList<>();
+//
+//        @SuppressWarnings("unchecked")
+//        private A newInstance() {
+//            try {
+//                for (Constructor<?> constructor :
+//                    this.getClass().getEnclosingClass().getDeclaredConstructors()) {
+//                    if (constructor.getParameterCount() == 0) {
+//                        return (A) constructor.newInstance();
+//                    }
+//                }
+//                throw new RuntimeException(
+//                    this.getClass().getEnclosingClass() + " must have no argument constructor");
+//            } catch (InstantiationException
+//                     | IllegalAccessException
+//                     | InvocationTargetException
+//                     | SecurityException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//
+//        public A build() throws IllegalArgumentException {
+//            A body = newInstance();
+//            operations.forEach(operation -> operation.accept(body));
+//            body.validate();
+//            return body;
+//        }
+//    }
 }

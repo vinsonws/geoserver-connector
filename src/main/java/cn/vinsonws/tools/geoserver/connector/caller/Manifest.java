@@ -9,7 +9,7 @@ public final class Manifest {
 
     public static final class ManifestBuilder extends AbstractCaller.ExecutableBuilder<ManifestBuilder>
         implements AbstractCaller.Get<Map<String, Object>> {
-        private static final String EXTEND_API = "/rest/about/manifest.json";
+        private static final String EXTEND_API = "/about/manifest.json";
 
         ManifestBuilder(AbstractCaller.ExecutableBuilder<?> other) {
             super(other);
