@@ -4,11 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.vinsonws.tools</groupId>
     <artifactId>geoserver-connector</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1-dev-${maven.build.timestamp}</version>
     <name>geoserver-connector</name>
     <description>Connectors for GeoServer</description>
     <properties>
         <java.version>11</java.version>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     </properties>
     <dependencies>
         <dependency>
