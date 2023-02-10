@@ -30,7 +30,8 @@ public final class Workspace {
         }
 
         public void create(String workspaceName) {
-            this.create(WithBodies.JSON(Map.of("name", Verification.validateNotEmptyString("workspaceName", workspaceName))));
+            this.create(WithBodies.JSON(Map.of("workspace",
+                Map.of("name", Verification.validateNotEmptyString("workspaceName", workspaceName)))));
         }
     }
 

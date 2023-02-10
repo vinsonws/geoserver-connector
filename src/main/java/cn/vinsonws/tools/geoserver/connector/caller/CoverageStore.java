@@ -43,5 +43,9 @@ public final class CoverageStore {
         public ResetCache.ResetCacheBuilder reset() {
             return new ResetCache.ResetCacheBuilder(this);
         }
+
+        public Coverage.CoveragesBuilder coverages(){
+            return new Coverage.CoveragesBuilder(this);
+        }
     }
 }

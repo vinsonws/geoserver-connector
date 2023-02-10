@@ -23,9 +23,9 @@ public final class Namespace {
 
 
         public void create(String prefix, String uri) {
-            this.create(WithBodies.JSON(Map.of("prefix",
-                Verification.validateNotEmptyString("prefix", prefix), "name",
-                Verification.validateNotEmptyString("uri", uri))));
+            this.create(WithBodies.JSON(Map.of("namespace", Map.of(
+                "prefix", Verification.validateNotEmptyString("prefix", prefix),
+                "uri", Verification.validateNotEmptyString("uri", uri)))));
         }
     }
 

@@ -6,8 +6,8 @@ package cn.vinsonws.tools.geoserver.connector.exception;
 public class GeoserverServiceFailedRuntimeException extends RuntimeException {
     private final int statusCode;
 
-    public GeoserverServiceFailedRuntimeException(int statusCode, String url) {
-        super("geoserver http status code cannot be " + statusCode + "(" + url + ")");
+    public GeoserverServiceFailedRuntimeException(int statusCode, String url, String message) {
+        super("geoserver http status code cannot be " + statusCode + "(" + url + "): " + message);
         this.statusCode = statusCode;
     }
 

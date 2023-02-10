@@ -2,8 +2,7 @@ package cn.vinsonws.tools.geoserver.connector;
 
 import cn.vinsonws.tools.geoserver.connector.caller.*;
 
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
+import java.util.Base64;
 
 /**
  * @author Vinsonws
@@ -16,12 +15,7 @@ public class GeoserverConnector {
     public GeoserverConnector(String baseurl, String userName, String password) {
         this.asyncClient =
             new AsyncGeoserverClient(baseurl,
-                new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(userName, password.toCharArray());
-                    }
-                });
+                "Basic " + Base64.getEncoder().encodeToString((userName + ":" + password).getBytes()));
         this.base = Base.base(this.asyncClient);
     }
 
@@ -38,6 +32,7 @@ public class GeoserverConnector {
      * The model is very simple and is shared between the version and the resource requests
      * to parse both requests. You can customize the results adding a properties file called
      * manifest.properties into the root of the data directory.
+     *
      * @return Manifest.ManifestBuilder
      */
     public Manifest.ManifestBuilder aboutManifest() {
@@ -47,6 +42,7 @@ public class GeoserverConnector {
     /**
      * Returns a list of system-level information. Major operating systems
      * (Linux, Windows and MacOX) are supported out of the box.
+     *
      * @return SystemStatus.SystemStatusBuilder
      */
     public SystemStatus.SystemStatusBuilder aboutSystemStatus() {
@@ -57,6 +53,7 @@ public class GeoserverConnector {
      * This endpoint shows the status details of all installed and configured modules.
      * Status details always include human readable name, and module name.
      * Optional details include version, availability, status message, and links to documentation.
+     *
      * @return Status.Builder
      */
     public Status.Builder aboutStatus() {
@@ -65,6 +62,7 @@ public class GeoserverConnector {
 
     /**
      * This endpoint shows only the details for the high-level components: GeoServer, GeoTools, and GeoWebCache.
+     *
      * @return Version.Builder
      */
     public Version.Builder aboutVersion() {
@@ -77,6 +75,7 @@ public class GeoserverConnector {
      * and store connections and reconnect to each of them the next time
      * they are needed by a request. This is useful in case the stores themselves cache
      * some information about the data structures they manage that may have changed in the meantime.
+     *
      * @return ResetCache.ResetCacheBuilder
      */
     public ResetCache.ResetCacheBuilder resetCache() {
@@ -89,6 +88,7 @@ public class GeoserverConnector {
      * modified the on-disk configuration. This operation will also
      * force GeoServer to drop any internal caches and reconnect
      * to all data stores.
+     *
      * @return Reload.ReloadBuilder
      */
     public Reload.ReloadBuilder reload() {
@@ -97,6 +97,7 @@ public class GeoserverConnector {
 
     /**
      * Displays a list of all fonts on the server.
+     *
      * @return Fonts.FontsBuilder
      */
     public Fonts.FontsBuilder fonts() {
@@ -108,6 +109,7 @@ public class GeoserverConnector {
      * Displays a list of all logging settings on the server.
      * POST:
      * Updates logging settings on the server.
+     *
      * @return Logging.LoggingBuilder
      */
     public Logging.LoggingBuilder logging() {

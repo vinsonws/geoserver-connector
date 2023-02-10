@@ -18,12 +18,12 @@ public class AsyncGeoserverClient {
     private final String baseurl;
     private final HttpClient client;
 
-    public AsyncGeoserverClient(String baseurl, Authenticator authenticator) {
+    private final String authHeader;
+
+    public AsyncGeoserverClient(String baseurl, String authHeader) {
         this.baseurl = baseurl;
-        if (authenticator == null)
-            this.client = HttpClient.newBuilder().build();
-        else
-            this.client = HttpClient.newBuilder().authenticator(authenticator).build();
+        this.client = HttpClient.newBuilder().build();
+        this.authHeader = authHeader;
     }
 
     public CompletableFuture<HttpResponse<String>> executeAsync(AbstractCaller args, WithBody withBody) {
@@ -50,6 +50,8 @@ public class AsyncGeoserverClient {
     private CompletableFuture<HttpResponse<String>> executeAsyncGet(AbstractCaller args) {
         HttpRequest.Builder builder = HttpRequest
             .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize())
+            .header("Authorization", authHeader)
+            .header("Accept", "application/json")
             .GET();
         for (Map.Entry<String, String> entry : args.getHeaders().entrySet()) {
             builder.header(entry.getKey(), entry.getValue());
@@ -61,8 +63,13 @@ public class AsyncGeoserverClient {
 
     private CompletableFuture<HttpResponse<String>> executeAsyncPost(AbstractCaller args, WithBody withBody) {
         HttpRequest.Builder builder = HttpRequest
-            .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize());
-        builder = builder.POST(withBody.getBodyPublisher());
+            .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize())
+            .header("Authorization", authHeader)
+            .header("Accept", "application/json")
+            .POST(withBody.getBodyPublisher());
+        if (withBody.getContentType() != null) {
+            builder = builder.header("Content-Type", withBody.getContentType());
+        }
         for (Map.Entry<String, String> entry : args.getHeaders().entrySet()) {
             builder.header(entry.getKey(), entry.getValue());
         }
@@ -74,8 +81,13 @@ public class AsyncGeoserverClient {
     private CompletableFuture<HttpResponse<String>> executeAsyncPut(AbstractCaller args, WithBody withBody) {
         HttpRequest.Builder builder = HttpRequest
             .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize());
-        builder = builder.PUT(withBody.getBodyPublisher());
-
+        builder = builder
+            .header("Authorization", authHeader)
+            .header("Accept", "application/json")
+            .PUT(withBody.getBodyPublisher());
+        if (withBody.getContentType() != null) {
+            builder = builder.header("Content-Type", withBody.getContentType());
+        }
         for (Map.Entry<String, String> entry : args.getHeaders().entrySet()) {
             builder.header(entry.getKey(), entry.getValue());
         }
@@ -87,6 +99,8 @@ public class AsyncGeoserverClient {
     private CompletableFuture<HttpResponse<String>> executeAsyncDelete(AbstractCaller args) {
         HttpRequest.Builder builder = HttpRequest
             .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize())
+            .header("Authorization", authHeader)
+            .header("Accept", "application/json")
             .DELETE();
         for (Map.Entry<String, String> entry : args.getHeaders().entrySet()) {
             builder.header(entry.getKey(), entry.getValue());

@@ -220,7 +220,8 @@ public abstract class AbstractCaller {
                 return client().executeAsync(buildGetArgs(), null)
                     .thenApply(response -> {
                         if (!HttpUtils.validateResponse(response)) {
-                            throw new GeoserverServiceFailedRuntimeException(response.statusCode(), response.uri().toString());
+                            throw new GeoserverServiceFailedRuntimeException(response.statusCode(),
+                                response.uri().toString(), response.body());
                         }
                         ObjectMapper mapper = new ObjectMapper();
                         try {
@@ -251,7 +252,8 @@ public abstract class AbstractCaller {
                 client().executeAsync(buildPostArgs(), withBody)
                     .thenAccept(response -> {
                         if (!HttpUtils.validateResponse(response)) {
-                            throw new GeoserverServiceFailedRuntimeException(response.statusCode(), response.uri().toString());
+                            throw new GeoserverServiceFailedRuntimeException(response.statusCode(),
+                                response.uri().toString(), response.body());
                         }
                     }).get();
             } catch (InterruptedException e) {
@@ -283,7 +285,8 @@ public abstract class AbstractCaller {
                 client().executeAsync(buildPutArgs(), withBody)
                     .thenAccept(response -> {
                         if (!HttpUtils.validateResponse(response)) {
-                            throw new GeoserverServiceFailedRuntimeException(response.statusCode(), response.uri().toString());
+                            throw new GeoserverServiceFailedRuntimeException(response.statusCode(),
+                                response.uri().toString(), response.body());
                         }
                     }).get();
             } catch (InterruptedException e) {
@@ -319,7 +322,8 @@ public abstract class AbstractCaller {
                 client().executeAsync(buildDeleteArgs(), null)
                     .thenAccept(response -> {
                         if (!HttpUtils.validateResponse(response)) {
-                            throw new GeoserverServiceFailedRuntimeException(response.statusCode(), response.uri().toString());
+                            throw new GeoserverServiceFailedRuntimeException(response.statusCode(),
+                                response.uri().toString(), response.body());
                         }
                     }).get();
             } catch (InterruptedException e) {

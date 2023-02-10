@@ -12,5 +12,10 @@ public final class WithBodies {
         @Override
         public void validate() {
         }
+
+        @Override
+        public String getContentType() {
+            return null;
+        }
     };
 }

@@ -19,6 +19,8 @@ public interface WithBody {
 
     void validate();
 
+    String getContentType();
+
     interface Json extends WithBody {
         @Override
         default HttpRequest.BodyPublisher getBodyPublisher() {
@@ -48,6 +50,11 @@ public interface WithBody {
 
         @Override
         public void validate() {
+        }
+
+        @Override
+        public String getContentType() {
+            return "application/json";
         }
     }
 
