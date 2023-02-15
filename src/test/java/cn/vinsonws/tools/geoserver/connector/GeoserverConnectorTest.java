@@ -16,7 +16,7 @@ public class GeoserverConnectorTest {
 
     @BeforeClass
     public static void initConnector() {
-        connector = new GeoserverConnector("http://192.168.1.77:8080/geoserver/",
+        connector = new GeoserverConnector("http://192.168.1.32:28080/geoserver/",
             "admin", "geoserver");
     }
 
@@ -56,5 +56,12 @@ public class GeoserverConnectorTest {
 //            )))
 //        );
         System.out.println(connector.workspaces().workspace("zwsws").coverageStores().store("dom5").fetch());
+    }
+
+        @Test
+    public void layer() {
+        System.out.println(connector.gwc()
+            .layers().layer("geo-adapter-default:zws111")
+                .fetch());
     }
 }

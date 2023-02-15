@@ -38,5 +38,16 @@ public final class Coverage {
         public ResetCache.ResetCacheBuilder reset() {
             return new ResetCache.ResetCacheBuilder(this);
         }
+
+        @Override
+        public void remove() {
+            this.remove(true);
+        }
+
+
+        public void remove(boolean recurse) {
+            this.parameter("recurse", String.valueOf(recurse));
+            AbstractCaller.Delete.super.remove();
+        }
     }
 }

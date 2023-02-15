@@ -1,5 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector.caller.gwc;
 
+import cn.vinsonws.tools.geoserver.connector.body.WithBodies;
+import cn.vinsonws.tools.geoserver.connector.body.WithBody;
 import cn.vinsonws.tools.geoserver.connector.caller.AbstractCaller;
 
 import java.util.Map;
@@ -33,6 +35,15 @@ public final class Seed {
         SeedBuilder(AbstractCaller.ExecutableBuilder<?> other, String layer, String format) {
             super(other);
             appendApi("/" + layer + "." + format);
+        }
+
+        public void submit(WithBody withBody) {
+            this.create(withBody);
+        }
+
+        public void kill() {
+            this.parameter("kill_all", "running");
+            this.POST(WithBodies.EMPTY);
         }
     }
 }

@@ -48,5 +48,9 @@ public final class GeoWebCache {
         public Statistics.StatisticsBuilder statistics() {
             return new Statistics.StatisticsBuilder(this);
         }
+
+        public Layer.LayersBuilder layers() {
+            return new Layer.LayersBuilder(this);
+        }
     }
 }

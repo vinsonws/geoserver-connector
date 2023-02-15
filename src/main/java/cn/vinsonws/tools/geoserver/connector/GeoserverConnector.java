@@ -1,6 +1,7 @@
 package cn.vinsonws.tools.geoserver.connector;
 
 import cn.vinsonws.tools.geoserver.connector.caller.*;
+import cn.vinsonws.tools.geoserver.connector.caller.gwc.GeoWebCache;
 
 import java.util.Base64;
 
@@ -126,6 +127,10 @@ public class GeoserverConnector {
 
     public Namespace.NamespacesBuilder namespaces() {
         return this.base.namespaces();
+    }
+
+    public GeoWebCache.GeoWebCacheBuilder gwc() {
+        return this.base.gwc();
     }
 
 
