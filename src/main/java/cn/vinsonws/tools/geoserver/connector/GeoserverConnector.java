@@ -143,12 +143,14 @@ public class GeoserverConnector {
             connector.gwc().service()
                 .tms("geo-adapter-default:chengdu", "EPSG:4326", "png");
         System.out.println(tms.url());
-        System.out.println(tms.fetch().get("BoundingBox"));
+        Object bbox = tms.fetch().get("BoundingBox");
+        System.out.println(bbox);
 
         MapService.WMTSBuilder wmts =
             connector.gwc().service()
                 .wmts("geo-adapter-default:chengdu", "EPSG:4326", "image/png");
         System.out.println(wmts.url());
+        System.out.println(connector.workspaces().workspace("geo-adapter-default").coverages().fetch());
 //        System.out.println(connector.aboutSystemStatus().GET());
     }
 }

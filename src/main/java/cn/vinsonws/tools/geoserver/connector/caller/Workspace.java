@@ -49,6 +49,10 @@ public final class Workspace {
             return new CoverageStore.CoverageStoresBuilder(this);
         }
 
+        public Coverage.CoveragesBuilder coverages() {
+            return new Coverage.CoveragesBuilder(this);
+        }
+
         public void update(String workspaceName) {
             this.update(WithBodies.JSON(Map.of("name", Verification.validateNotEmptyString("workspaceName", workspaceName))));
         }
