@@ -1,13 +1,13 @@
 package cn.vinsonws.tools.geoserver.connector;
 
-import cn.vinsonws.tools.geoserver.connector.caller.AbstractCaller;
 import cn.vinsonws.tools.geoserver.connector.body.WithBody;
+import cn.vinsonws.tools.geoserver.connector.caller.AbstractCaller;
 
-import java.net.Authenticator;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -22,7 +22,7 @@ public class AsyncGeoserverClient {
 
     public AsyncGeoserverClient(String baseurl, String authHeader) {
         this.baseurl = baseurl;
-        this.client = HttpClient.newBuilder().build();
+        this.client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         this.authHeader = authHeader;
     }
 
@@ -50,6 +50,7 @@ public class AsyncGeoserverClient {
     private CompletableFuture<HttpResponse<String>> executeAsyncGet(AbstractCaller args) {
         HttpRequest.Builder builder = HttpRequest
             .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize())
+            .timeout(Duration.ofSeconds(60))
             .header("Authorization", authHeader)
             .header("Accept", "application/json")
             .GET();
@@ -64,6 +65,7 @@ public class AsyncGeoserverClient {
     private CompletableFuture<HttpResponse<String>> executeAsyncPost(AbstractCaller args, WithBody withBody) {
         HttpRequest.Builder builder = HttpRequest
             .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize())
+            .timeout(Duration.ofSeconds(60))
             .header("Authorization", authHeader)
             .header("Accept", "application/json")
             .POST(withBody.getBodyPublisher());
@@ -80,7 +82,8 @@ public class AsyncGeoserverClient {
 
     private CompletableFuture<HttpResponse<String>> executeAsyncPut(AbstractCaller args, WithBody withBody) {
         HttpRequest.Builder builder = HttpRequest
-            .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize());
+            .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize())
+            .timeout(Duration.ofSeconds(60));
         builder = builder
             .header("Authorization", authHeader)
             .header("Accept", "application/json")
@@ -99,6 +102,7 @@ public class AsyncGeoserverClient {
     private CompletableFuture<HttpResponse<String>> executeAsyncDelete(AbstractCaller args) {
         HttpRequest.Builder builder = HttpRequest
             .newBuilder(URI.create(baseurl + "/" + args.getApiWithParameters()).normalize())
+            .timeout(Duration.ofSeconds(60))
             .header("Authorization", authHeader)
             .header("Accept", "application/json")
             .DELETE();
