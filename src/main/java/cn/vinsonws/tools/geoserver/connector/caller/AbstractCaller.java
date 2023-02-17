@@ -9,11 +9,9 @@ import cn.vinsonws.tools.geoserver.connector.util.HttpUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -223,12 +221,27 @@ public abstract class AbstractCaller {
                             throw new GeoserverServiceFailedRuntimeException(response.statusCode(),
                                 response.uri().toString(), response.body());
                         }
-                        ObjectMapper mapper = new ObjectMapper();
-                        try {
-                            return mapper.readValue(response.body(), new TypeReference<R>() {
-                            });
-                        } catch (JsonProcessingException e) {
-                            throw new RuntimeException(e);
+                        Optional<String> contentTypeOpt = response.headers().firstValue("content-type");
+                        String contentType = contentTypeOpt.orElse("application/json");
+                        if ("application/json".equals(contentType)) {
+                            ObjectMapper mapper = new ObjectMapper();
+                            try {
+                                return mapper.readValue(response.body(), new TypeReference<R>() {
+                                });
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else if ("text/xml".equals(contentType) || "application/xml".equals(contentType)) {
+                            XmlMapper xmlMapper = new XmlMapper();
+                            try {
+                                return xmlMapper.readValue(response.body(), new TypeReference<R>() {
+                                });
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            throw new GeoserverServiceFailedRuntimeException(400,
+                                response.uri().toString(), response.body());
                         }
                     }).get();
             } catch (InterruptedException e) {

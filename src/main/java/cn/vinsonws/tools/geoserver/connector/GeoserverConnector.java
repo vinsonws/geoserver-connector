@@ -2,6 +2,7 @@ package cn.vinsonws.tools.geoserver.connector;
 
 import cn.vinsonws.tools.geoserver.connector.caller.*;
 import cn.vinsonws.tools.geoserver.connector.caller.gwc.GeoWebCache;
+import cn.vinsonws.tools.geoserver.connector.caller.gwc.MapService;
 
 import java.util.Base64;
 
@@ -135,9 +136,19 @@ public class GeoserverConnector {
 
 
     public static void main(String[] args) {
-        GeoserverConnector connector = new GeoserverConnector("http://192.168.1.77:8080/geoserver/",
+        GeoserverConnector connector = new GeoserverConnector("http://192.168.1.32:28080/geoserver/",
             "admin", "geoserver");
-        System.out.println(connector.resources().resource("workspaces").fetch());
+//        System.out.println(connector.resources().resource("workspaces").fetch());
+        MapService.TMSBuilder tms =
+            connector.gwc().service()
+                .tms("geo-adapter-default:chengdu", "EPSG:4326", "png");
+        System.out.println(tms.url());
+        System.out.println(tms.fetch().get("BoundingBox"));
+
+        MapService.WMTSBuilder wmts =
+            connector.gwc().service()
+                .wmts("geo-adapter-default:chengdu", "EPSG:4326", "image/png");
+        System.out.println(wmts.url());
 //        System.out.println(connector.aboutSystemStatus().GET());
     }
 }
