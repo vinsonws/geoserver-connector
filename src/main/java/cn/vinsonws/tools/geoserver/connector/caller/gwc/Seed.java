@@ -25,6 +25,10 @@ public final class Seed {
         public SeedBuilder seed(String layer, String format) {
             return new SeedBuilder(this, layer, format);
         }
+
+        public SeedBuilder seed(String layer) {
+            return new SeedBuilder(this, layer, null);
+        }
     }
 
     public static final class SeedBuilder
@@ -34,7 +38,11 @@ public final class Seed {
 
         SeedBuilder(AbstractCaller.ExecutableBuilder<?> other, String layer, String format) {
             super(other);
-            appendApi("/" + layer + "." + format);
+            if (format == null) {
+                appendApi("/" + layer);
+            } else {
+                appendApi("/" + layer + "." + format);
+            }
         }
 
         public void submit(WithBody withBody) {
