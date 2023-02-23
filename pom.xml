@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.vinsonws.tools</groupId>
     <artifactId>geoserver-connector</artifactId>
-    <version>0.1-dev-2023021717</version>
+    <version>0.1-dev-2023022310</version>
     <name>geoserver-connector</name>
     <description>Connectors for GeoServer</description>
     <developers>
